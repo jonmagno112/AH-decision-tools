@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex Hormozi Business Optimizer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --dark-gradient: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #2d2d2d 100%);
+            --neon-blue: #00f5ff;
+            --neon-purple: #bf00ff;
+            --neon-green: #39ff14;
+            --neon-orange: #ff6b35;
+            --neon-red: #ff073a;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0c0c0c;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 70%, rgba(102, 126, 234, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(255, 107, 53, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 20% 20%, rgba(57, 255, 20, 0.3) 0%, transparent 50%);
+            animation: backgroundShift 25s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+            33% { transform: translateX(-30px) translateY(-30px) rotate(2deg); }
+            66% { transform: translateX(30px) translateY(20px) rotate(-2deg); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff6b35, #f093fb, #667eea);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
+            text-shadow: 0 0 40px rgba(255, 107, 53, 0.5);
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+        
+        .header .emoji {
+            font-size: 1.2em;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .upload-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-orange), transparent);
+            animation: sweep 3s linear infinite;
+        }
+        
+        @keyframes sweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .upload-section.dragover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 245, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.3);
+        }
+        
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--neon-orange);
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .upload-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--neon-orange);
+        }
+        
+        .upload-subtext {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 30px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(135deg, var(--neon-orange), var(--neon-red));
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+        }
+        
+        .analysis-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            position: relative;
+            display: none;
+        }
+        
+        .analysis-card.show {
+            display: block;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .analysis-header {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(255, 107, 53, 0.2));
+            padding: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .analysis-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .business-name {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+        }
+        
+        .score-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .score-card {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .score-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+        
+        .score-card.strong::before { background: linear-gradient(90deg, var(--neon-green), var(--neon-blue)); }
+        .score-card.average::before { background: linear-gradient(90deg, #ffc107, #fd7e14); }
+        .score-card.weak::before { background: linear-gradient(90deg, var(--neon-red), #dc3545); }
+        
+        .score-card h4 {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .score-card .score {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+        
+        .score-card.strong .score { color: var(--neon-green); }
+        .score-card.average .score { color: #ffc107; }
+        .score-card.weak .score { color: var(--neon-red); }
+        
+        .score-card .label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .recommendations-section {
+            padding: 40px;
+        }
+        
+        .rec-category {
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .rec-header {
+            padding: 25px 30px;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(191, 0, 255, 0.2));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .rec-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--neon-orange);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .rec-header .priority {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .priority.critical {
+            background: linear-gradient(135deg, var(--neon-red), #dc3545);
+            color: white;
+        }
+        
+        .priority.important {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: black;
+        }
+        
+        .priority.nice-to-have {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            color: white;
+        }
+        
+        .rec-content {
+            padding: 30px;
+        }
+        
+        .recommendation-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--neon-blue);
+            position: relative;
+        }
+        
+        .recommendation-item h4 {
+            color: var(--neon-blue);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .recommendation-item p {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .action-steps {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .action-steps h5 {
+            color: var(--neon-green);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .action-steps ol {
+            color: rgba(255, 255, 255, 0.8);
+            padding-left: 20px;
+        }
+        
+        .action-steps li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .pivot-section {
+            background: linear-gradient(135deg, rgba(191, 0, 255, 0.1), rgba(255, 7, 58, 0.1));
+            border: 2px solid rgba(191, 0, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .pivot-section h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--neon-purple);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .pivot-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .pivot-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(191, 0, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .pivot-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-purple);
+            box-shadow: 0 15px 30px rgba(191, 0, 255, 0.3);
+        }
+        
+        .pivot-card h4 {
+            color: var(--neon-purple);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .hormozi-insight {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(26, 26, 26, 0.8));
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--neon-blue);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hormozi-insight::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-green));
+            background-size: 200% 100%;
+            animation: flow 3s linear infinite;
+        }
+        
+        @keyframes flow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        
+        .hormozi-insight h4 {
+            color: var(--neon-blue);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .hormozi-insight p {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--neon-orange), var(--neon-red));
+            color: white;
+            border: 2px solid var(--neon-orange);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.5);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 255, 255, 0.2);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--neon-blue);
+        }
+        
+        .loading .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(0, 245, 255, 0.3);
+            border-top: 4px solid var(--neon-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .score-overview {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .pivot-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><span class="emoji">🧠</span> Alex Hormozi Business Optimizer</h1>
+            <p>Upload your framework results and get specific action plans to turn weak ideas into winners</p>
+        </div>
+        
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-icon">📊</div>
+            <div class="upload-text">Drop your framework JSON file here</div>
+            <div class="upload-subtext">or click to browse and upload your decision analysis results</div>
+            <input type="file" id="fileInput" class="file-input" accept=".json" />
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                Select JSON File
+            </button>
+        </div>
+        
+        <div class="analysis-card" id="analysisCard">
+            <div class="analysis-header">
+                <h2 id="analysisTitle">Business Analysis</h2>
+                <div class="business-name" id="businessName">Loading...</div>
+            </div>
+            
+            <div class="score-overview" id="scoreOverview">
+                <!-- Score cards will be populated here -->
+            </div>
+            
+            <div class="recommendations-section" id="recommendationsSection">
+                <!-- Recommendations will be populated here -->
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="generateActionPlan()" id="actionPlanBtn" style="display: none;">
+                📋 Generate Action Plan
+            </button>
+            <button class="btn btn-secondary" onclick="downloadReport()" id="downloadBtn" style="display: none;">
+                📄 Download Report
+            </button>
+            <button class="btn btn-secondary" onclick="resetTool()">
+                🔄 Analyze Another
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        let currentData = null;
+        let analysis = null;
+        
+        // File upload handling
+        document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+        
+        const uploadSection = document.getElementById('uploadSection');
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+        
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('dragover');
+        });
+        
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        });
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processFile(file);
+            }
+        }
+        
+        function processFile(file) {
+            if (!file.name.endsWith('.json')) {
+                alert('Please upload a JSON file from the Hormozi Decision Framework.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    currentData = JSON.parse(e.target.result);
+                    analyzeData(currentData);
+                } catch (error) {
+                    alert('Error reading file. Please make sure it\'s a valid JSON file from the framework.');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        function analyzeData(data) {
+            // Show loading
+            const analysisCard = document.getElementById('analysisCard');
+            analysisCard.innerHTML = '<div class="loading"><div class="spinner"></div><h3>Analyzing Your Business...</h3></div>';
+            analysisCard.classList.add('show');
+            
+            // Simulate analysis time
+            setTimeout(() => {
+                analysis = performAnalysis(data);
+                displayAnalysis(analysis);
+            }, 2000);
+        }
+        
+        function performAnalysis(data) {
+            // Extract scores from data
+            const scores = {
+                painIntensity: calculatePainScore(data),
+                marketSize: calculateMarketScore(data),
+                economics: calculateEconomicsScore(data),
+                speed: calculateSpeedScore(data),
+                scalability: calculateScalabilityScore(data),
+                riskLevel: calculateRiskScore(data)
+            };
+            
+            const totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
+            
+            // Generate recommendations based on weaknesses
+            const recommendations = generateRecommendations(scores, data);
+            const pivots = shouldPivot(totalScore) ? generatePivots(data, scores) : null;
+            
+            return {
+                scores,
+                totalScore,
+                recommendations,
+                pivots,
+                problemDescription: data.problemDescription || 'Business Opportunity',
+                data: data
+            };
+        }
+        
+        function calculatePainScore(data) {
+            const painLevel = parseInt(data['pain-level'] || 0);
+            const problemCost = parseInt(data['problem-cost'] || 0);
+            const previousSpending = parseInt(data['previous-spending'] || 0);
+            
+            return Math.round((
+                painLevel * 0.4 +
+                Math.min(problemCost / 1000, 5) * 0.3 +
+                previousSpending * 0.3
+            ));
+        }
+        
+        function calculateMarketScore(data) {
+            const marketSize = parseInt(data['market-size'] || 0);
+            const customerIncome = parseInt(data['customer-income'] || 0);
+            const competition = parseInt(data.competition || 0);
+            
+            return Math.round((
+                Math.min(marketSize / 10000, 5) * 0.4 +
+                Math.min(customerIncome / 50000, 5) * 0.3 +
+                competition * 0.3
+            ));
+        }
+        
+        function calculateEconomicsScore(data) {
+            const pricePerCustomer = parseInt(data['price-per-customer'] || 0);
+            const acquisitionCost = parseInt(data['acquisition-cost'] || 1);
+            const grossMargin = parseInt(data['gross-margin'] || 0);
+            const revenueType = parseInt(data['revenue-type'] || 0);
+            
+            const ltv = pricePerCustomer * (grossMargin / 100);
+            const ltvCacRatio = ltv / acquisitionCost;
+            
+            return Math.round((
+                Math.min(ltvCacRatio, 5) * 0.5 +
+                revenueType * 0.3 +
+                Math.min(grossMargin / 20, 5) * 0.2
+            ));
+        }
+        
+        function calculateSpeedScore(data) {
+            const testingSpeed = parseInt(data['testing-speed'] || 0);
+            const testBudget = parseInt(data['test-budget'] || 0);
+            const presellAbility = parseInt(data['presell-ability'] || 0);
+            
+            return Math.round((
+                testingSpeed * 0.4 +
+                (5 - Math.min(testBudget / 5000, 5)) * 0.3 +
+                presellAbility * 0.3
+            ));
+        }
+        
+        function calculateScalabilityScore(data) {
+            const founderDependency = parseInt(data['founder-dependency'] || 0);
+            const hiringEase = parseInt(data['hiring-ease'] || 0);
+            const scalingDifficulty = parseInt(data['scaling-difficulty'] || 0);
+            
+            return Math.round((
+                founderDependency * 0.4 +
+                hiringEase * 0.3 +
+                scalingDifficulty * 0.3
+            ));
+        }
+        
+        function calculateRiskScore(data) {
+            const riskReversal = parseInt(data['risk-reversal'] || 0);
+            const maxLoss = parseInt(data['max-loss'] || 0);
+            
+            return Math.round((
+                riskReversal * 0.6 +
+                (5 - Math.min(maxLoss / 10000, 5)) * 0.4
+            ));
+        }
+        
+        function generateRecommendations(scores, data) {
+            const recommendations = [];
+            
+            // Economics fixes
+            if (scores.economics <= 2) {
+                recommendations.push({
+                    category: "Critical Economics Fix",
+                    priority: "critical",
+                    title: "Your Unit Economics Are Broken",
+                    description: "Your LTV:CAC ratio is too low. This will kill your business before it starts.",
+                    actions: [
+                        "Increase your price by 2-3x immediately",
+                        "Add premium positioning and messaging",
+                        "Bundle additional services/products",
+                        "Find lower-cost acquisition channels",
+                        "Improve conversion rates to reduce CAC"
+                    ]
+                });
+            } else if (scores.economics <= 3) {
+                recommendations.push({
+                    category: "Economics Optimization",
+                    priority: "important",
+                    title: "Improve Your Unit Economics",
+                    description: "Your economics work but could be much stronger.",
+                    actions: [
+                        "Test 50% price increase with value justification",
+                        "Create upsell/cross-sell opportunities",
+                        "Optimize your sales funnel for higher conversion",
+                        "Reduce customer acquisition costs through better targeting"
+                    ]
+                });
+            }
+            
+            // Pain/Market fixes
+            if (scores.painIntensity <= 2) {
+                recommendations.push({
+                    category: "Market Validation Issue",
+                    priority: "critical",
+                    title: "Find a More Painful Problem",
+                    description: "People won't pay for 'nice to have' solutions. Find something that keeps them up at night.",
+                    actions: [
+                        "Interview 20 potential customers about their biggest problems",
+                        "Look for problems costing them $1000+ monthly",
+                        "Find urgent, expensive problems with failed solutions",
+                        "Consider pivoting to a more painful problem in the same space"
+                    ]
+                });
+            }
+            
+            // Speed fixes
+            if (scores.speed <= 2) {
+                recommendations.push({
+                    category: "Speed to Market",
+                    priority: "important",
+                    title: "You're Moving Too Slow",
+                    description: "Speed kills. The longer you take to test, the more likely you'll fail.",
+                    actions: [
+                        "Create a minimum viable test in 7 days",
+                        "Pre-sell before you build anything",
+                        "Use no-code tools to test quickly",
+                        "Start with manual delivery to prove demand",
+                        "Set a hard 30-day testing deadline"
+                    ]
+                });
+            }
+            
+            // Scalability fixes
+            if (scores.scalability <= 2) {
+                recommendations.push({
+                    category: "Scalability Planning",
+                    priority: "important",
+                    title: "Build Systems or Stay Small",
+                    description: "Founder-dependent businesses don't scale. Document everything now.",
+                    actions: [
+                        "Document every process step-by-step",
+                        "Create training materials for key tasks",
+                        "Identify which tasks can be automated",
+                        "Plan hiring sequence for growth phases",
+                        "Build systems before you need them"
+                    ]
+                });
+            }
+            
+            return recommendations;
+        }
+        
+        function shouldPivot(totalScore) {
+            return totalScore < 15;
+        }
+        
+        function generatePivots(data, scores) {
+            const pivots = [];
+            
+            // Find strengths to build on
+            const strengths = Object.entries(scores).filter(([key, value]) => value >= 4);
+            
+            if (strengths.length > 0) {
+                pivots.push({
+                    title: "Leverage Your Strengths",
+                    description: `Your ${strengths.map(s => s[0]).join(' and ')} are strong. Find a similar problem in this space.`,
+                    approach: "Keep the same target market but solve a more painful/profitable problem."
+                });
+            }
+            
+            pivots.push({
+                title: "Higher-Ticket Version",
+                description: "Same solution, but for enterprise customers who can pay 10x more.",
+                approach: "Target businesses instead of consumers, or larger businesses instead of small ones."
+            });
+            
+            pivots.push({
+                title: "Service-First Approach",
+                description: "Start with high-touch service delivery, then productize what works.",
+                approach: "Manually deliver results for premium clients, document what works, then scale."
+            });
+            
+            if (scores.speed >= 3) {
+                pivots.push({
+                    title: "Quick Win Pivot",
+                    description: "Use your ability to move fast to test 3-5 related problems quickly.",
+                    approach: "Rapid test different problem/solution fits in the same market."
+                });
+            }
+            
+            return pivots;
+        }
+        
+        function displayAnalysis(analysis) {
+            const analysisCard = document.getElementById('analysisCard');
+            
+            // Build the complete analysis display
+            analysisCard.innerHTML = `
+                <div class="analysis-header">
+                    <h2>Business Analysis Complete</h2>
+                    <div class="business-name">${analysis.problemDescription}</div>
+                </div>
+                
+                <div class="score-overview">
+                    ${Object.entries(analysis.scores).map(([key, value]) => `
+                        <div class="score-card ${getScoreClass(value)}">
+                            <h4>${formatScoreName(key)}</h4>
+                            <div class="score">${value}/5</div>
+                            <div class="label">${getScoreLabel(value)}</div>
+                        </div>
+                    `).join('')}
+                    <div class="score-card ${getTotalScoreClass(analysis.totalScore)}">
+                        <h4>Total Score</h4>
+                        <div class="score">${analysis.totalScore}/30</div>
+                        <div class="label">${getTotalScoreLabel(analysis.totalScore)}</div>
+                    </div>
+                </div>
+                
+                <div class="hormozi-insight">
+                    <h4>Hormozi's Take</h4>
+                    <p>${getHormoziInsight(analysis.totalScore, analysis.scores)}</p>
+                </div>
+                
+                <div class="recommendations-section">
+                    ${analysis.recommendations.map(rec => `
+                        <div class="rec-category">
+                            <div class="rec-header">
+                                <h3>${rec.category}</h3>
+                                <span class="priority ${rec.priority}">${rec.priority}</span>
+                            </div>
+                            <div class="rec-content">
+                                <div class="recommendation-item">
+                                    <h4>${rec.title}</h4>
+                                    <p>${rec.description}</p>
+                                    <div class="action-steps">
+                                        <h5>Action Steps:</h5>
+                                        <ol>
+                                            ${rec.actions.map(action => `<li>${action}</li>`).join('')}
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                ${analysis.pivots ? `
+                    <div class="pivot-section">
+                        <h3>Consider These Pivots</h3>
+                        <p>Your current idea needs major changes. Here are better directions:</p>
+                        <div class="pivot-options">
+                            ${analysis.pivots.map(pivot => `
+                                <div class="pivot-card">
+                                    <h4>${pivot.title}</h4>
+                                    <p>${pivot.description}</p>
+                                    <p><strong>Approach:</strong> ${pivot.approach}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+            `;
+            
+            // Show action buttons
+            document.getElementById('actionPlanBtn').style.display = 'inline-block';
+            document.getElementById('downloadBtn').style.display = 'inline-block';
+        }
+        
+        function getScoreClass(score) {
+            if (score >= 4) return 'strong';
+            if (score >= 2) return 'average';
+            return 'weak';
+        }
+        
+        function getTotalScoreClass(score) {
+            if (score >= 24) return 'strong';
+            if (score >= 18) return 'average';
+            return 'weak';
+        }
+        
+        function formatScoreName(key) {
+            return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+        }
+        
+        function getScoreLabel(score) {
+            if (score >= 4) return 'Strong';
+            if (score >= 2) return 'Average';
+            return 'Weak';
+        }
+        
+        function getTotalScoreLabel(score) {
+            if (score >= 24) return 'Winner';
+            if (score >= 18) return 'Test It';
+            if (score >= 12) return 'Needs Work';
+            return 'Pivot';
+        }
+        
+        function getHormoziInsight(totalScore, scores) {
+            const weakest = Object.entries(scores).sort((a, b) => a[1] - b[1])[0];
+            const strongest = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+            
+            if (totalScore < 15) {
+                return `This idea is fundamentally broken. Your ${formatScoreName(weakest[0]).toLowerCase()} is killing you. Don't try to fix a bad idea - find a better one.`;
+            } else if (totalScore < 20) {
+                return `You've got potential but major issues. Fix your ${formatScoreName(weakest[0]).toLowerCase()} first - that's your biggest bottleneck. Your ${formatScoreName(strongest[0]).toLowerCase()} is solid, build on that.`;
+            } else {
+                return `This could work. Your ${formatScoreName(strongest[0]).toLowerCase()} is your competitive advantage. Shore up the weak spots and you've got a winner.`;
+            }
+        }
+        
+        function generateActionPlan() {
+            if (!analysis) return;
+            
+            // Create a detailed action plan
+            const actionPlan = `
+# 30-Day Action Plan: ${analysis.problemDescription}
+
+## Week 1: Foundation
+${analysis.recommendations.filter(r => r.priority === 'critical').map(r => 
+    `- ${r.title}: ${r.actions[0]}`
+).join('\n')}
+
+## Week 2-3: Implementation  
+${analysis.recommendations.filter(r => r.priority === 'important').map(r => 
+    `- ${r.category}: ${r.actions.slice(0, 2).join(' and ')}`
+).join('\n')}
+
+## Week 4: Testing & Optimization
+- Launch minimum viable test
+- Collect customer feedback
+- Iterate based on results
+- Measure key metrics
+
+## Success Metrics
+- Target LTV:CAC ratio: 3:1 minimum
+- Customer acquisition cost under $${Math.round(analysis.data['price-per-customer'] * 0.3)}
+- 30-day revenue goal: $${Math.round(analysis.data['price-per-customer'] * 10)}
+
+## Weekly Check-ins
+Ask yourself: "Am I moving closer to these numbers or further away?"
+            `.trim();
+            
+            // Display action plan in a modal-style overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+                background: rgba(0,0,0,0.8); z-index: 1000; 
+                display: flex; align-items: center; justify-content: center;
+                padding: 20px;
+            `;
+            
+            overlay.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, rgba(12, 12, 12, 0.95), rgba(26, 26, 26, 0.95));
+                    backdrop-filter: blur(20px);
+                    border: 2px solid rgba(0, 245, 255, 0.3);
+                    border-radius: 20px;
+                    padding: 40px;
+                    max-width: 800px;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    color: white;
+                ">
+                    <h2 style="color: #00f5ff; margin-bottom: 20px;">Your 30-Day Action Plan</h2>
+                    <pre style="white-space: pre-wrap; line-height: 1.6; font-family: inherit;">${actionPlan}</pre>
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        background: linear-gradient(135deg, #ff6b35, #ff073a);
+                        color: white; border: none; padding: 15px 30px;
+                        border-radius: 10px; font-weight: 600; cursor: pointer;
+                        margin-top: 20px; float: right;
+                    ">Close</button>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+        }
+        
+        function downloadReport() {
+            if (!analysis) return;
+            
+            const report = {
+                timestamp: new Date().toISOString(),
+                business: analysis.problemDescription,
+                totalScore: analysis.totalScore,
+                scores: analysis.scores,
+                recommendations: analysis.recommendations,
+                pivots: analysis.pivots,
+                hormoziInsight: getHormoziInsight(analysis.totalScore, analysis.scores)
+            };
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `hormozi-optimization-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function resetTool() {
+            currentData = null;
+            analysis = null;
+            document.getElementById('analysisCard').classList.remove('show');
+            document.getElementById('fileInput').value = '';
+            document.getElementById('actionPlanBtn').style.display = 'none';
+            document.getElementById('downloadBtn').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
