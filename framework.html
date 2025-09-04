@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex Hormozi Decision Framework</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --dark-gradient: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #2d2d2d 100%);
+            --neon-blue: #00f5ff;
+            --neon-purple: #bf00ff;
+            --neon-green: #39ff14;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0c0c0c;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            animation: backgroundShift 20s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            33% { transform: translateX(-20px) translateY(-20px); }
+            66% { transform: translateX(20px) translateY(10px); }
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #00f5ff, #bf00ff, #39ff14);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+        
+        .header .emoji {
+            font-size: 1.2em;
+            display: inline-block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .framework-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .framework-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-gradient);
+            background-size: 200% 200%;
+            animation: gradientMove 3s linear infinite;
+        }
+        
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        
+        .progress-container {
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .progress-label {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-green));
+            background-size: 200% 100%;
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: shimmer 2s linear infinite;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .phase {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .phase:last-child {
+            border-bottom: none;
+        }
+        
+        .phase:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .phase-header {
+            background: transparent;
+            padding: 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffffff;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .phase-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .phase-header:hover::before {
+            left: 100%;
+        }
+        
+        .phase-header.active {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(191, 0, 255, 0.2));
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 245, 255, 0.8);
+        }
+        
+        .phase-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.1rem;
+            margin-right: 20px;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.4);
+        }
+        
+        .toggle-icon {
+            font-size: 1.5rem;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--neon-blue);
+        }
+        
+        .phase-header.active .toggle-icon {
+            transform: rotate(180deg);
+            color: var(--neon-green);
+        }
+        
+        .phase-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .phase-content.active {
+            max-height: 3000px;
+            padding: 40px;
+        }
+        
+        .question-group {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .question-group::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+        }
+        
+        .question-group h4 {
+            color: var(--neon-blue);
+            margin-bottom: 25px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+        }
+        
+        .question label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+        }
+        
+        .question input, .question textarea, .question select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .question input:focus, .question textarea:focus, .question select:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .question textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .rating-scale {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .rating-scale label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            margin-bottom: 0;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .rating-scale label:hover {
+            background: rgba(0, 245, 255, 0.1);
+            border-color: var(--neon-blue);
+        }
+        
+        .rating-scale input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+        
+        .rating-scale input[type="radio"]:checked + span {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px rgba(0, 245, 255, 0.8);
+        }
+        
+        .score-summary {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(57, 255, 20, 0.2));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 245, 255, 0.2);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 20px 40px rgba(0, 245, 255, 0.2); }
+            50% { box-shadow: 0 30px 60px rgba(0, 245, 255, 0.4); }
+        }
+        
+        .score-summary h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .score-item {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .score-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 245, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+        
+        .score-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 245, 255, 0.2);
+        }
+        
+        .score-item:hover::before {
+            opacity: 1;
+            transform: rotate(45deg) translate(50%, 50%);
+        }
+        
+        .score-item h4 {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .score-item .score {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+        }
+        
+        .recommendation {
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            font-weight: 700;
+            font-size: 1.4rem;
+            text-align: center;
+            border: 2px solid;
+            backdrop-filter: blur(20px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .recommendation.go {
+            background: linear-gradient(135deg, rgba(57, 255, 20, 0.2), rgba(0, 245, 255, 0.2));
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            text-shadow: 0 0 20px rgba(57, 255, 20, 0.8);
+        }
+        
+        .recommendation.test {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.2));
+            border-color: #ffc107;
+            color: #ffc107;
+            text-shadow: 0 0 20px rgba(255, 193, 7, 0.8);
+        }
+        
+        .recommendation.maybe {
+            background: linear-gradient(135deg, rgba(108, 117, 125, 0.2), rgba(73, 80, 87, 0.2));
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+        
+        .recommendation.no {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.2), rgba(200, 35, 51, 0.2));
+            border-color: #dc3545;
+            color: #dc3545;
+            text-shadow: 0 0 20px rgba(220, 53, 69, 0.8);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            color: white;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 10px 25px rgba(0, 245, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 245, 255, 0.5);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 255, 255, 0.2);
+        }
+        
+        .hormozi-quote {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(26, 26, 26, 0.6));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(191, 0, 255, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            font-style: italic;
+            text-align: center;
+            margin: 30px 0;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(191, 0, 255, 0.2);
+        }
+        
+        .hormozi-quote::before,
+        .hormozi-quote::after {
+            content: '"';
+            font-size: 4rem;
+            color: var(--neon-purple);
+            position: absolute;
+            font-family: Georgia, serif;
+        }
+        
+        .hormozi-quote::before {
+            top: -10px;
+            left: 20px;
+        }
+        
+        .hormozi-quote::after {
+            bottom: -40px;
+            right: 20px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .phase-header {
+                font-size: 1.1rem;
+                padding: 25px 20px;
+            }
+            
+            .phase-number {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+                margin-right: 15px;
+            }
+            
+            .rating-scale {
+                gap: 10px;
+            }
+            
+            .rating-scale label {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .score-breakdown {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-green));
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><span class="emoji">🚀</span> Alex Hormozi Decision Framework</h1>
+            <p>Make data-driven business decisions like a $100M entrepreneur using advanced analytics</p>
+        </div>
+        
+        <div class="framework-card">
+            <div class="progress-container">
+                <div class="progress-label">Completion Progress</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- Phase 1: Problem-Market Validation -->
+            <div class="phase">
+                <button class="phase-header" onclick="togglePhase(1)">
+                    <div style="display: flex; align-items: center;">
+                        <span class="phase-number">1</span>
+                        <span>Problem-Market Validation</span>
+                    </div>
+                    <span class="toggle-icon">▼</span>
+                </button>
+                <div class="phase-content" id="phase1">
+                    <div class="question-group">
+                        <h4>Pain Audit</h4>
+                        <div class="question">
+                            <label>Describe the problem you're solving:</label>
+                            <textarea id="problem-description" onchange="updateProgress()" placeholder="Clearly define the specific problem your solution addresses..."></textarea>
+                        </div>
+                        <div class="question">
+                            <label>Pain Level (1-10): How badly does this hurt the customer?</label>
+                            <div class="rating-scale">
+                                <label><input type="radio" name="pain-level" value="1" onchange="updateProgress()"> <span>1</span></label>
+                                <label><input type="radio" name="pain-level" value="2" onchange="updateProgress()"> <span>2</span></label>
+                                <label><input type="radio" name="pain-level" value="3" onchange="updateProgress()"> <span>3</span></label>
+                                <label><input type="radio" name="pain-level" value="4" onchange="updateProgress()"> <span>4</span></label>
+                                <label><input type="radio" name="pain-level" value="5" onchange="updateProgress()"> <span>5</span></label>
+                                <label><input type="radio" name="pain-level" value="6" onchange="updateProgress()"> <span>6</span></label>
+                                <label><input type="radio" name="pain-level" value="7" onchange="updateProgress()"> <span>7</span></label>
+                                <label><input type="radio" name="pain-level" value="8" onchange="updateProgress()"> <span>8</span></label>
+                                <label><input type="radio" name="pain-level" value="9" onchange="updateProgress()"> <span>9</span></label>
+                                <label><input type="radio" name="pain-level" value="10" onchange="updateProgress()"> <span>10</span></label>
+                            </div>
+                        </div>
+                        <div class="question">
+                            <label>What does this problem cost them monthly? ($)</label>
+                            <input type="number" id="problem-cost" onchange="updateProgress()" placeholder="0">
+                        </div>
+                        <div class="question">
+                            <label>Have they spent money trying to solve this before?</label>
+                            <select id="previous-spending" onchange="updateProgress()">
+                                <option value="">Select...</option>
+                                <option value="5">Yes, significant amounts ($10K+)</option>
+                                <option value="4">Yes, moderate amounts ($1K-$10K)</option>
+                                <option value="3">Yes, small amounts (<$1K)</option>
+                                <option value="2">Looked but never bought</option>
+                                <option value="1">Never looked for solutions</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <h4>Market Sizing</h4>
+                        <div class="question">
+                            <label>Estimated number of potential customers:</label>
+                            <input type="number" id="market-size" onchange="updateProgress()" placeholder="0">
+                        </div>
+                        <div class="question">
+                            <label>Average annual income of target customer:</label>
+                            <input type="number" id="customer-income" onchange="updateProgress()" placeholder="0">
+                        </div>
+                        <div class="question">
+                            <label>Competition level (1-5):</label>
+                            <div class="rating-scale">
+                                <label><input type="radio" name="competition" value="5" onchange="updateProgress()"> <span>No competition</span></label>
+                                <label><input type="radio" name="competition" value="4" onchange="updateProgress()"> <span>Light competition</span></label>
+                                <label><input type="radio" name="competition" value="3" onchange="updateProgress()"> <span>Moderate competition</span></label>
+                                <label><input type="radio" name="competition" value="2" onchange="updateProgress()"> <span>Heavy competition</span></label>
+                                <label><input type="radio" name="competition" value="1" onchange="updateProgress()"> <span>Saturated market</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phase 2: Economic Viability -->
+            <div class="phase">
+                <button class="phase-header" onclick="togglePhase(2)">
+                    <div style="display: flex; align-items: center;">
+                        <span class="phase-number">2</span>
+                        <span>Economic Viability Analysis</span>
+                    </div>
+                    <span class="toggle-icon">▼</span>
+                </button>
+                <div class="phase-content" id="phase2">
+                    <div class="question-group">
+                        <h4>Unit Economics</h4>
+                        <div class="question">
+                            <label>Expected price per customer ($):</label>
+                            <input type="number" id="price-per-customer" onchange="updateProgress()" placeholder="0">
+                        </div>
+                        <div class="question">
+                            <label>Cost to acquire one customer ($):</label>
+                            <input type="number" id="acquisition-cost" onchange="updateProgress()" placeholder="0">
+                        </div>
+                        <div class="question">
+                            <label>Gross margin per customer (%):</label>
+                            <input type="number" id="gross-margin" min="0" max="100" onchange="updateProgress()" placeholder="0">
+                        </div>
+                        <div class="question">
+                            <label>Expected customer lifetime (months):</label>
+                            <input type="number" id="customer-lifetime" onchange="updateProgress()" placeholder="0">
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <h4>Revenue Model</h4>
+                        <div class="question">
+                            <label>Revenue type:</label>
+                            <select id="revenue-type" onchange="updateProgress()">
+                                <option value="">Select...</option>
+                                <option value="5">Recurring subscription</option>
+                                <option value="4">One-time with upsells</option>
+                                <option value="3">One-time high-ticket</option>
+                                <option value="2">Project-based</option>
+                                <option value="1">Low-ticket one-time</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label>Time to break even on customer acquisition (months):</label>
+                            <input type="number" id="breakeven-time" onchange="updateProgress()" placeholder="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phase 3: Speed & Testing -->
+            <div class="phase">
+                <button class="phase-header" onclick="togglePhase(3)">
+                    <div style="display: flex; align-items: center;">
+                        <span class="phase-number">3</span>
+                        <span>Speed & Testing Framework</span>
+                    </div>
+                    <span class="toggle-icon">▼</span>
+                </button>
+                <div class="phase-content" id="phase3">
+                    <div class="question-group">
+                        <h4>Testing Speed</h4>
+                        <div class="question">
+                            <label>How quickly can you test this idea?</label>
+                            <select id="testing-speed" onchange="updateProgress()">
+                                <option value="">Select...</option>
+                                <option value="5">Within 1 week</option>
+                                <option value="4">Within 2-4 weeks</option>
+                                <option value="3">Within 1-2 months</option>
+                                <option value="2">Within 3-6 months</option>
+                                <option value="1">6+ months</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label>Budget needed to test ($):</label>
+                            <input type="number" id="test-budget" onchange="updateProgress()" placeholder="0">
+                        </div>
+                        <div class="question">
+                            <label>Can you pre-sell before building?</label>
+                            <select id="presell-ability" onchange="updateProgress()">
+                                <option value="">Select...</option>
+                                <option value="5">Yes, easily</option>
+                                <option value="4">Yes, with some effort</option>
+                                <option value="3">Maybe</option>
+                                <option value="2">Probably not</option>
+                                <option value="1">Definitely not</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phase 4: Scalability -->
+            <div class="phase">
+                <button class="phase-header" onclick="togglePhase(4)">
+                    <div style="display: flex; align-items: center;">
+                        <span class="phase-number">4</span>
+                        <span>Scalability Assessment</span>
+                    </div>
+                    <span class="toggle-icon">▼</span>
+                </button>
+                <div class="phase-content" id="phase4">
+                    <div class="question-group">
+                        <h4>Systems Dependency</h4>
+                        <div class="question">
+                            <label>How dependent is this on you personally?</label>
+                            <select id="founder-dependency" onchange="updateProgress()">
+                                <option value="">Select...</option>
+                                <option value="5">Can run completely without me</option>
+                                <option value="4">Minimal involvement needed</option>
+                                <option value="3">Some involvement required</option>
+                                <option value="2">Heavily dependent on me</option>
+                                <option value="1">Only I can do this</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label>How easy is it to hire and train others?</label>
+                            <select id="hiring-ease" onchange="updateProgress()">
+                                <option value="">Select...</option>
+                                <option value="5">Very easy - clear processes</option>
+                                <option value="4">Fairly easy - some documentation needed</option>
+                                <option value="3">Moderate - requires training</option>
+                                <option value="2">Difficult - specialized skills</option>
+                                <option value="1">Very difficult - unique expertise</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label>Does it get easier or harder as you grow?</label>
+                            <select id="scaling-difficulty" onchange="updateProgress()">
+                                <option value="">Select...</option>
+                                <option value="5">Much easier with scale</option>
+                                <option value="4">Somewhat easier</option>
+                                <option value="3">About the same</option>
+                                <option value="2">Somewhat harder</option>
+                                <option value="1">Much harder with scale</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phase 5: Risk Management -->
+            <div class="phase">
+                <button class="phase-header" onclick="togglePhase(5)">
+                    <div style="display: flex; align-items: center;">
+                        <span class="phase-number">5</span>
+                        <span>Risk Management</span>
+                    </div>
+                    <span class="toggle-icon">▼</span>
+                </button>
+                <div class="phase-content" id="phase5">
+                    <div class="question-group">
+                        <h4>Downside Protection</h4>
+                        <div class="question">
+                            <label>Maximum financial loss if this fails ($):</label>
+                            <input type="number" id="max-loss" onchange="updateProgress()" placeholder="0">
+                        </div>
+                        <div class="question">
+                            <label>How much risk can you reverse for customers?</label>
+                            <select id="risk-reversal" onchange="updateProgress()">
+                                <option value="">Select...</option>
+                                <option value="5">Full money-back guarantee + bonus</option>
+                                <option value="4">Full money-back guarantee</option>
+                                <option value="3">Partial refund policy</option>
+                                <option value="2">Credit/exchange only</option>
+                                <option value="1">No refunds</option>
+                            </select>
+                        </div>
+                        <div class="question">
+                            <label>If this fails, what could you pivot to?</label>
+                            <textarea id="pivot-options" onchange="updateProgress()" placeholder="Describe your backup plans and pivot opportunities..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="score-summary" id="results" style="display: none;">
+                <h2>Decision Analysis</h2>
+                <div class="score-breakdown" id="scoreBreakdown"></div>
+                <div class="recommendation" id="recommendation"></div>
+                <div class="hormozi-quote" id="hormoziQuote"></div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="calculateScore()">📊 Analyze Decision</button>
+                <button class="btn btn-secondary" onclick="resetForm()">🔄 Reset Framework</button>
+                <button class="btn btn-secondary" onclick="saveResults()">💾 Save Results</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function togglePhase(phaseNumber) {
+            const header = document.querySelector(`#phase${phaseNumber}`).previousElementSibling;
+            const content = document.querySelector(`#phase${phaseNumber}`);
+            
+            header.classList.toggle('active');
+            content.classList.toggle('active');
+        }
+        
+        function updateProgress() {
+            const inputs = document.querySelectorAll('input, select, textarea');
+            let completed = 0;
+            let total = 0;
+            
+            inputs.forEach(input => {
+                total++;
+                if (input.type === 'radio') {
+                    if (document.querySelector(`input[name="${input.name}"]:checked`)) {
+                        completed++;
+                    }
+                } else if (input.value.trim() !== '') {
+                    completed++;
+                }
+            });
+            
+            // Adjust for radio button groups
+            const radioGroups = ['pain-level', 'competition'];
+            total -= inputs.length;
+            radioGroups.forEach(group => {
+                total++;
+                if (document.querySelector(`input[name="${group}"]:checked`)) {
+                    completed++;
+                }
+            });
+            total += inputs.length - (radioGroups.length * 10 - radioGroups.length);
+            
+            const progress = (completed / total) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+        
+        function calculateScore() {
+            const scores = {
+                painIntensity: 0,
+                marketSize: 0,
+                economics: 0,
+                speed: 0,
+                scalability: 0,
+                riskLevel: 0
+            };
+            
+            // Pain Intensity Score
+            const painLevel = document.querySelector('input[name="pain-level"]:checked')?.value || 0;
+            const problemCost = document.getElementById('problem-cost').value || 0;
+            const previousSpending = document.getElementById('previous-spending').value || 0;
+            
+            scores.painIntensity = Math.round((
+                parseInt(painLevel) * 0.4 +
+                Math.min(parseInt(problemCost) / 1000, 5) * 0.3 +
+                parseInt(previousSpending) * 0.3
+            ));
+            
+            // Market Size Score
+            const marketSize = document.getElementById('market-size').value || 0;
+            const customerIncome = document.getElementById('customer-income').value || 0;
+            const competition = document.querySelector('input[name="competition"]:checked')?.value || 0;
+            
+            scores.marketSize = Math.round((
+                Math.min(parseInt(marketSize) / 10000, 5) * 0.4 +
+                Math.min(parseInt(customerIncome) / 50000, 5) * 0.3 +
+                parseInt(competition) * 0.3
+            ));
+            
+            // Economics Score
+            const pricePerCustomer = document.getElementById('price-per-customer').value || 0;
+            const acquisitionCost = document.getElementById('acquisition-cost').value || 1;
+            const grossMargin = document.getElementById('gross-margin').value || 0;
+            const revenueType = document.getElementById('revenue-type').value || 0;
+            
+            const ltv = parseInt(pricePerCustomer) * (parseInt(grossMargin) / 100);
+            const ltvCacRatio = ltv / parseInt(acquisitionCost);
+            
+            scores.economics = Math.round((
+                Math.min(ltvCacRatio, 5) * 0.5 +
+                parseInt(revenueType) * 0.3 +
+                Math.min(parseInt(grossMargin) / 20, 5) * 0.2
+            ));
+            
+            // Speed Score
+            const testingSpeed = document.getElementById('testing-speed').value || 0;
+            const testBudget = document.getElementById('test-budget').value || 0;
+            const presellAbility = document.getElementById('presell-ability').value || 0;
+            
+            scores.speed = Math.round((
+                parseInt(testingSpeed) * 0.4 +
+                (5 - Math.min(parseInt(testBudget) / 5000, 5)) * 0.3 +
+                parseInt(presellAbility) * 0.3
+            ));
+            
+            // Scalability Score
+            const founderDependency = document.getElementById('founder-dependency').value || 0;
+            const hiringEase = document.getElementById('hiring-ease').value || 0;
+            const scalingDifficulty = document.getElementById('scaling-difficulty').value || 0;
+            
+            scores.scalability = Math.round((
+                parseInt(founderDependency) * 0.4 +
+                parseInt(hiringEase) * 0.3 +
+                parseInt(scalingDifficulty) * 0.3
+            ));
+            
+            // Risk Level Score
+            const riskReversal = document.getElementById('risk-reversal').value || 0;
+            const maxLoss = document.getElementById('max-loss').value || 0;
+            
+            scores.riskLevel = Math.round((
+                parseInt(riskReversal) * 0.6 +
+                (5 - Math.min(parseInt(maxLoss) / 10000, 5)) * 0.4
+            ));
+            
+            const totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
+            
+            displayResults(scores, totalScore);
+        }
+        
+        function displayResults(scores, totalScore) {
+            const results = document.getElementById('results');
+            const scoreBreakdown = document.getElementById('scoreBreakdown');
+            const recommendation = document.getElementById('recommendation');
+            const hormoziQuote = document.getElementById('hormoziQuote');
+            
+            // Clear previous results
+            scoreBreakdown.innerHTML = '';
+            
+            // Display score breakdown
+            Object.entries(scores).forEach(([key, value]) => {
+                const scoreItem = document.createElement('div');
+                scoreItem.className = 'score-item';
+                scoreItem.innerHTML = `
+                    <h4>${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</h4>
+                    <div class="score">${value}/5</div>
+                `;
+                scoreBreakdown.appendChild(scoreItem);
+            });
+            
+            // Add total score
+            const totalItem = document.createElement('div');
+            totalItem.className = 'score-item';
+            totalItem.innerHTML = `
+                <h4>Total Score</h4>
+                <div class="score">${totalScore}/30</div>
+            `;
+            scoreBreakdown.appendChild(totalItem);
+            
+            // Generate recommendation
+            let recommendationText = '';
+            let recommendationClass = '';
+            let quote = '';
+            
+            if (totalScore >= 24) {
+                recommendationClass = 'go';
+                recommendationText = `🚀 GO FAST - This is a winner! Score: ${totalScore}/30`;
+                quote = "If I had to bet my own money, I'd bet on this. The numbers don't lie.";
+            } else if (totalScore >= 18) {
+                recommendationClass = 'test';
+                recommendationText = `🧪 TEST FIRST - Worth validating. Score: ${totalScore}/30`;
+                quote = "This could work, but test it fast and cheap before going all in.";
+            } else if (totalScore >= 12) {
+                recommendationClass = 'maybe';
+                recommendationText = `🤔 MAYBE - Needs major improvements. Score: ${totalScore}/30`;
+                quote = "There's potential here, but you need to fix the weak points first.";
+            } else {
+                recommendationClass = 'no';
+                recommendationText = `❌ NO - Find something better. Score: ${totalScore}/30`;
+                quote = "Your time is worth more than this. Find a better opportunity.";
+            }
+            
+            recommendation.className = `recommendation ${recommendationClass}`;
+            recommendation.innerHTML = recommendationText;
+            hormoziQuote.innerHTML = quote;
+            
+            results.style.display = 'block';
+            results.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function resetForm() {
+            document.querySelectorAll('input, select, textarea').forEach(element => {
+                if (element.type === 'radio' || element.type === 'checkbox') {
+                    element.checked = false;
+                } else {
+                    element.value = '';
+                }
+            });
+            document.getElementById('results').style.display = 'none';
+            updateProgress();
+        }
+        
+        function saveResults() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                problemDescription: document.getElementById('problem-description').value,
+                scores: {},
+                recommendation: document.getElementById('recommendation')?.textContent || 'No analysis yet'
+            };
+            
+            // Collect all form data
+            document.querySelectorAll('input, select, textarea').forEach(element => {
+                if (element.type === 'radio') {
+                    const checked = document.querySelector(`input[name="${element.name}"]:checked`);
+                    if (checked) data[element.name] = checked.value;
+                } else if (element.id) {
+                    data[element.id] = element.value;
+                }
+            });
+            
+            // Create and download JSON file
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `hormozi-framework-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Results saved! You can reload this data later if needed.');
+        }
+        
+        // Auto-update progress when page loads
+        document.addEventListener('DOMContentLoaded', updateProgress);
+    </script>
+</body>
+</html>
