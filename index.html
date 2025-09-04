@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex Hormozi Business Tools</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --neon-blue: #00f5ff;
+            --neon-purple: #bf00ff;
+            --neon-green: #39ff14;
+            --neon-orange: #ff6b35;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0c0c0c;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            animation: backgroundShift 20s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            33% { transform: translateX(-20px) translateY(-20px); }
+            66% { transform: translateX(20px) translateY(10px); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+        
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #00f5ff, #bf00ff, #39ff14);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 40px rgba(0, 245, 255, 0.5);
+            margin-bottom: 30px;
+            line-height: 1;
+        }
+        
+        .hero .emoji {
+            font-size: 1.2em;
+            display: inline-block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-15px); }
+            60% { transform: translateY(-8px); }
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .hero .subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.4;
+        }
+        
+        .hero .tagline {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: var(--neon-blue);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 60px;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+        
+        .tool-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-green));
+            background-size: 200% 200%;
+            animation: gradientMove 3s linear infinite;
+        }
+        
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 245, 255, 0.3);
+            border-color: rgba(0, 245, 255, 0.4);
+        }
+        
+        .tool-card .icon {
+            font-size: 4rem;
+            margin-bottom: 25px;
+            display: block;
+        }
+        
+        .tool-card.framework .icon {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .tool-card.optimizer .icon {
+            background: linear-gradient(135deg, var(--neon-orange), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .tool-card h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .tool-card.framework h2 { color: var(--neon-blue); }
+        .tool-card.optimizer h2 { color: var(--neon-orange); }
+        
+        .tool-card p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .tool-card .features {
+            list-style: none;
+            margin-bottom: 35px;
+        }
+        
+        .tool-card .features li {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            font-size: 0.95rem;
+        }
+        
+        .tool-card .features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--neon-green);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-framework {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            color: white;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 10px 25px rgba(0, 245, 255, 0.3);
+        }
+        
+        .btn-framework:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 245, 255, 0.5);
+        }
+        
+        .btn-optimizer {
+            background: linear-gradient(135deg, var(--neon-orange), #ff073a);
+            color: white;
+            border: 2px solid var(--neon-orange);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+        }
+        
+        .btn-optimizer:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.5);
+        }
+        
+        .workflow {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 60px;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .workflow::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+            animation: sweep 4s linear infinite;
+        }
+        
+        @keyframes sweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .workflow h3 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--neon-green);
+            text-align: center;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .step {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .step:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-green);
+            box-shadow: 0 15px 30px rgba(57, 255, 20, 0.2);
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-blue));
+            color: #0c0c0c;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+        }
+        
+        .step h4 {
+            color: var(--neon-green);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .step p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            font-size: 1rem;
+        }
+        
+        .cta-section {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.1), rgba(191, 0, 255, 0.1));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0, 245, 255, 0.3);
+            border-radius: 25px;
+            padding: 50px;
+            margin: 60px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 245, 255, 0.05), transparent);
+            transform: rotate(45deg);
+            animation: rotate 8s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .cta-section h3 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--neon-blue);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-section p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer p {
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+            font-size: 1rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .tool-card {
+                padding: 40px 30px;
+            }
+            
+            .steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .workflow {
+                padding: 40px 30px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1><span class="emoji">🚀</span> Alex Hormozi Business Tools</h1>
+            <p class="subtitle">Make data-driven business decisions like a $100M entrepreneur</p>
+            <p class="tagline">The complete system for validating and optimizing business opportunities</p>
+        </div>
+        
+        <div class="tools-grid">
+            <div class="tool-card framework">
+                <div class="icon">📊</div>
+                <h2>Decision Framework</h2>
+                <p>Analyze any business opportunity using Hormozi's proven methodology. Get scientific scores across 6 critical dimensions that determine business success.</p>
+                <ul class="features">
+                    <li>Pain intensity and market validation</li>
+                    <li>Unit economics and LTV:CAC analysis</li>
+                    <li>Speed to market assessment</li>
+                    <li>Scalability and systems evaluation</li>
+                    <li>Risk management scoring</li>
+                    <li>Automated GO/TEST/NO recommendations</li>
+                </ul>
+                <a href="framework.html" class="btn btn-framework">Launch Framework</a>
+            </div>
+            
+            <div class="tool-card optimizer">
+                <div class="icon">🧠</div>
+                <h2>Business Optimizer</h2>
+                <p>Upload your framework results and get specific, actionable plans to fix weak areas. Turn "maybe" ideas into "go" ideas with targeted strategies.</p>
+                <ul class="features">
+                    <li>Weakness identification and prioritization</li>
+                    <li>Specific improvement recommendations</li>
+                    <li>30-day action plans with metrics</li>
+                    <li>Pivot suggestions for broken ideas</li>
+                    <li>Hormozi-style direct insights</li>
+                    <li>Downloadable optimization reports</li>
+                </ul>
+                <a href="optimizer.html" class="btn btn-optimizer">Optimize Business</a>
+            </div>
+        </div>
+        
+        <div class="workflow">
+            <h3>🎯 Complete Business Validation System</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Analyze</h4>
+                    <p>Use the Decision Framework to score your business idea across 6 key dimensions using Hormozi's methodology</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Export</h4>
+                    <p>Save your complete analysis as a JSON file with all scores, metrics, and recommendations</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Optimize</h4>
+                    <p>Upload to the Business Optimizer for specific improvement recommendations and action plans</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Execute</h4>
+                    <p>Follow the 30-day action plan to systematically fix weak areas and validate improvements</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cta-section">
+            <h3>Ready to Build a $100M Business?</h3>
+            <p>Stop guessing. Start using the same frameworks that built Acquisition.com</p>
+            <div class="cta-buttons">
+                <a href="framework.html" class="btn btn-framework">Start Analysis</a>
+                <a href="optimizer.html" class="btn btn-optimizer">Optimize Existing Idea</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Based on Alex Hormozi's frameworks from "$100M Offers" and "$100M Leads"</p>
+        </div>
+    </div>
+</body>
+</html>
